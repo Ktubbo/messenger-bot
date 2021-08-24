@@ -24,7 +24,7 @@ public class ScheduleService {
 
     @Scheduled(cron = "0 0 10,22 * * *")
     public void xKomSender() {
-        String imgPath = xKomService.getHotShot();
-        fbService.sendImgTo(imgPath,receiver);
+        xKomService.getHotShot();
+        fbService.sendClipboardImageTo(receiver);
     }
 }

@@ -2,7 +2,9 @@ package com.fbbotprototype.services;
 
 import com.fbbotprototype.web.WebController;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ public class FBService {
     private String XPATH_LOGIN;
     @Value("${fb.xpath.logged}")
     private String XPATH_LOGGED;
+    @Value("${fb.xpath.textfield}")
+    private String XPATH_TEXTFIELD;
     @Value("#{systemEnvironment['BOT_USERNAME']}")
     private String botUsername;
     @Value("#{systemEnvironment['BOT_PASSWORD']}")
@@ -61,28 +65,10 @@ public class FBService {
         return driver.findElement(By.xpath(XPATH_LOGGED)).isDisplayed();
         }
 
-    public void sendImgTo(String imgPath, String receiver) {
-        driver.findElement(By.xpath("//*[text()='"+receiver+"']")).click();
-
+    public void sendClipboardImageTo(String receiver) {
+        pickReceiver(receiver);
         try {
             Robot robot = new Robot();
-
-            robot.delay(500);
-            if (operatingSystem.equals("Raspbian")) {
-                robot.mouseMove(424,700);
-            } else {
-                robot.mouseMove(424,676);
-            }
-            robot.delay(500);
-            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-            robot.delay(500);
-            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            robot.delay(2000);
-
-            StringSelection stringSelection = new StringSelection(imgPath);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, stringSelection);
-
             robot.keyPress(KeyEvent.VK_CONTROL);
             robot.keyPress(KeyEvent.VK_V);
             robot.keyRelease(KeyEvent.VK_V);
@@ -90,13 +76,37 @@ public class FBService {
             robot.delay(3000);
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
-            robot.delay(3000);
-            robot.keyPress(KeyEvent.VK_ENTER);
-            robot.keyRelease(KeyEvent.VK_ENTER);
-            robot.delay(3000);
 
         } catch (AWTException e) {
             e.printStackTrace();
             }
         }
+
+    public void sendMessageTo(String message, String receiver) {
+        pickReceiver(receiver);
+
+        StringSelection stringSelection = new StringSelection(message);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, stringSelection);
+        try {
+            Robot robot = new Robot();
+            robot.delay(1000);
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.delay(1000);
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pickReceiver(String receiver) {
+        driver.findElement(By.xpath("//*[text()='"+receiver+"']")).click();
+            WebElement textField = driver.findElement(xpath(XPATH_TEXTFIELD));
+            textField.click();
+    }
 }

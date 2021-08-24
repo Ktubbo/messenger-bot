@@ -40,8 +40,7 @@ public class XKomService {
         while (!driver.findElement(xpath(XPATH_COMPONENT)).isDisplayed());
         WebDriverWait wait = new WebDriverWait(driver,30);
         wait.until(d->d.findElement(xpath(XPATH_COMPONENT)));
-        LAST_SCREENSHOT_PATH = screenshooter.getScreenshot(FILE_SAVE_PATH,
-                new Rectangle(40,360,850,370));
+        screenshooter.getScreenshot(new Rectangle(40,360,850,370));
         driver.close();
         return LAST_SCREENSHOT_PATH;
     }

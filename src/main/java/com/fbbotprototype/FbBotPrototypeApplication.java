@@ -14,6 +14,5 @@ public class FbBotPrototypeApplication {
         ApplicationContext applicationContext = SpringApplication.run(FbBotPrototypeApplication.class, args);
         FBService fbService = applicationContext.getBean(FBService.class);
         fbService.botLogIn();
-
     }
 }
